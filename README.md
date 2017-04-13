@@ -1,6 +1,6 @@
 # Elastic Beanstalk, Docker and Terraform
 
-First: There a [full blog post](https://flypenguin.de/2017/04/12/elastic-beanstalk-with-docker-using-terraform) about this repo. Read it for a more detailed info.
+First: There a [full blog post](https://flypenguin.de/2017/04/13/elastic-beanstalk-with-docker-using-terraform/) about this repo. Read it for a more detailed info.
 
 
 ## Quickstart
