@@ -1,0 +1,11 @@
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# "generated" files
+.terraform/
+terraform.tfvars
+support/s3.tf.dist
+app_version_*.tf
+Dockerrun.aws.json
