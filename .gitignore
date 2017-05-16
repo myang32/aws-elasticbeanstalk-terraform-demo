@@ -11,3 +11,10 @@ terraform.tfvars
 support/s3.tf.dist
 app_version_*.tf
 Dockerrun.aws.json
+
+# editor files
+.idea/
+*.sublime-*
+
+# other files
+tmp/
