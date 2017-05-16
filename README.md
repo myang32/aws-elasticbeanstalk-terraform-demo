@@ -5,7 +5,8 @@ First: There a [full blog post](https://flypenguin.de/2017/04/13/elastic-beansta
 
 ## Quickstart
 
-* copy `terraform.tfvars.dist` to `terraform.tfvars` and fill in your own values
+* copy every `*.dist` file to its non-"dist" counterpart
+* edit each of those files to adjust for your environment
 * run `terraform plan` to see what would happen
 * run `terraform apply` to get the application and an environment
 * run `app_config_create_and_upload.sh` to create an application version
