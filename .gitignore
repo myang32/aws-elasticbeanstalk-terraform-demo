@@ -5,6 +5,9 @@
 ebextensions/
 .ebextensions/
 
+# generally added files for local tests
+my-*
+
 # "generated" files
 .terraform/
 terraform.tfvars
