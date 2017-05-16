@@ -5,6 +5,10 @@
 ebextensions/
 .ebextensions/
 
+# *.dist files and their non-dist counterparts
+*.dist
+app_config_json.template
+
 # generally added files for local tests
 my-*
 
