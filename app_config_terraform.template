@@ -1,5 +1,5 @@
 # define elastic beanstalk app version "%%VERSION%%"
-resource "aws_elastic_beanstalk_application_version" "%%VERSION%%" {
+resource "aws_elastic_beanstalk_application_version" "%%VERSION_CLEAN%%" {
   name        = "%%VERSION%%"
   application = "${aws_elastic_beanstalk_application.test_app.name}"
   description = "${aws_elastic_beanstalk_application.test_app.name}, version %%VERSION%%, using %%IMAGE%%"

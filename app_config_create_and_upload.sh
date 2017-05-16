@@ -46,35 +46,38 @@ fi
 
 #set -x
 
-# enable sub-paths in S3
 VERSION=$(basename $1)
+VERSION_CLEAN=$(echo $VERSION | sed 's/[^a-zA-Z0-9_-]/_/g')
+
+
 cat app_config_json.template \
   | sed -r -e "s&%%IMAGE%%&$2&g" \
   > Dockerrun.aws.json
-zip $VERSION Dockerrun.aws.json
+zip $VERSION_CLEAN Dockerrun.aws.json
 
 
 # take care of .ebextensions
 if [[ -d "ebextensions" ]] ; then
   echo "Found ebextensions/. Adding to ZIP as .ebextensions ..."
   cp -r ebextensions .ebextensions
-  zip -r $VERSION .ebextensions
+  zip -r $VERSION_CLEAN .ebextensions
   rm -rf .ebextensions
 fi
 
 
 # upload the shit
-aws s3 cp $VERSION.zip s3://$EBS_BUCKET/$1.zip
-rm -f $VERSION.zip
+aws s3 cp "${VERSION_CLEAN}.zip" "s3://$EBS_BUCKET/${VERSION_CLEAN}.zip"
+rm -f "${VERSION_CLEAN}.zip"
 rm -f Dockerrun.aws.json
 
 
 # create the terraform config
 cat app_config_terraform.template \
   | sed -r -e "s/%%VERSION%%/$VERSION/g" \
+           -e "s/%%VERSION_CLEAN%%/$VERSION_CLEAN/g" \
            -e "s/%%EBS_BUCKET%%/$EBS_BUCKET/g" \
            -e "s&%%IMAGE%%&$2&g" \
-           -e "s!%%KEY%%!$1.zip!g" \
+           -e "s!%%KEY%%!${VERSION_CLEAN}.zip!g" \
   > app_version_${VERSION}.tf
 
 # done.
