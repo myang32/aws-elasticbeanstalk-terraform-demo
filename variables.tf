@@ -29,7 +29,7 @@ variable "asg_size_min" {
 }
 
 variable "asg_size_max" {
-  default = "25"
+  default = "4"
 }
 
 variable "asg_size_desired" {
@@ -125,6 +125,39 @@ variable "elb_scheme" {
 
 variable "elb_drain_connections" {
   default = "true"
+}
+
+# ============================================================================
+# rolling update settings
+
+# The number of instances included in each batch of the rolling update.
+variable "rupd_max_batch_size" {
+  default = ""
+}
+
+# The minimum number of instances that must be in service within the
+# autoscaling group while other instances are terminated.
+variable "rupd_min_instances_in_service" {
+  default = ""
+}
+
+# If true, enables rolling updates for an environment. Rolling updates are
+# useful when you need to make small, frequent updates to your Elastic
+# Beanstalk software application and you want to avoid application downtime.
+# Setting this value to true automatically enables the MaxBatchSize,
+# MinInstancesInService, and PauseTime options. Setting any of those options
+# also automatically sets the RollingUpdateEnabled option value to true.
+# Setting this option to false disables rolling updates.
+variable "rupd_enabled" {
+  default = "false"
+}
+
+# Time-based rolling updates apply a PauseTime between batches. Health-based
+# rolling updates wait for new instances to pass health checks before moving
+# on to the next batch. Immutable updates launch a full set of instances in
+# a new AutoScaling group.
+variable "rupd_type" {
+  default = "Time"
 }
 
 # ============================================================================

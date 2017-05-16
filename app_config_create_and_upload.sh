@@ -1,27 +1,33 @@
 #!/usr/bin/env bash
 
-# I expect the following directory structure:
 #
-# ./
-#   |- dockerrunjsons/
-#                    |- <version0>/
-#                    |         |- Dockerrun.aws.json
-#                    |- <version1>/
-#                              |- Dockerrun.aws.json
+# Creates a ZIP file with the following content:
+#
+#    vX.zip -> -|
+#               |-Dockerrun.aws.json
+#               |-.ebextensions       (optional)
+#                  |- ...
+#
+
 
 if [ "$2" == "" ]; then
   cat <<EOF
 
-USAGE:    $(basename $0) <version-name> <docker-image-tag>
-EXAMPLE:  $(basename $0) latest latest
+USAGE:    $(basename $0) <version-name> <docker-image>
+EXAMPLE:  $(basename $0) v6 jenkins
+          $(basename $0) 1.2.3 my.host.com:5000/myrepo/mycontainer:v1.2.3
 
 Will create the Dockerrun.aws.json file from the file dockerrun.json.template,
-use the image 'flypenguin/test:latest', upload it to the S3 bucket '$S3_BUCKET',
-and create a terraform file which creates the app version under the name
-'latest'.
+replace %%IMAGE%% in that file with the image given, upload it to the S3
+bucket given in the variable \$EBS_BUCKET (if not set it will ask you to enter
+it), and create a terraform file which creates the app version under the name
+you have specified.
 
-NOTE: flypenguin/test has only one version tag, which is 'latest'. So for your
-own tests you'd need to modify the template.
+If present, a "ebextensions" directory is copied to .ebextensions and also
+packaged into the ZIP file for environment configuration.
+
+If you don't have a test image, you can use 'flypenguin/test:latest'. It only
+has one tag ('latest') though.
 
 EOF
   exit -1
@@ -37,26 +43,37 @@ if [ "$EBS_BUCKET" == "" ] ; then
   echo ""
 fi
 
+
 #set -x
 
 # enable sub-paths in S3
 VERSION=$(basename $1)
 cat app_config_json.template \
-  | sed -r -e "s/%%IMAGE_TAG%%/$2/g" \
+  | sed -r -e "s&%%IMAGE%%&$2&g" \
   > Dockerrun.aws.json
 zip $VERSION Dockerrun.aws.json
 
-# upload the shit
 
+# take care of .ebextensions
+if [[ -d "ebextensions" ]] ; then
+  echo "Found ebextensions/. Adding to ZIP as .ebextensions ..."
+  cp -r ebextensions .ebextensions
+  zip -r $VERSION .ebextensions
+  rm -rf .ebextensions
+fi
+
+
+# upload the shit
 aws s3 cp $VERSION.zip s3://$EBS_BUCKET/$1.zip
 rm -f $VERSION.zip
 rm -f Dockerrun.aws.json
 
-# create the terraform config
 
+# create the terraform config
 cat app_config_terraform.template \
   | sed -r -e "s/%%VERSION%%/$VERSION/g" \
            -e "s/%%EBS_BUCKET%%/$EBS_BUCKET/g" \
+           -e "s&%%IMAGE%%&$2&g" \
            -e "s!%%KEY%%!$1.zip!g" \
   > app_version_${VERSION}.tf
 

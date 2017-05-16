@@ -142,6 +142,30 @@ resource "aws_elastic_beanstalk_environment" "test_env" {
   }
 
   # ..........................................................................
+  # rolling update settings
+
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "MaxBatchSize"
+    value     = "${var.rupd_max_batch_size}"
+  }
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "MinInstancesInService"
+    value     = "${var.rupd_min_instances_in_service}"
+  }
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "RollingUpdateEnabled"
+    value     = "${var.rupd_enabled}"
+  }
+  setting {
+    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
+    name      = "RollingUpdateType"
+    value     = "${var.rupd_type}"
+  }
+
+  # ..........................................................................
   # environment variables in the application container :)
 
 
@@ -166,26 +190,6 @@ resource "aws_elastic_beanstalk_environment" "test_env" {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "SystemType"
     value     = "enhanced"
-  }
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "RollingUpdateEnabled"
-    value     = "true"
-  }
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "RollingUpdateType"
-    value     = "Health"
-  }
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "MinInstancesInService"
-    value     = "2"
-  }
-  setting {
-    namespace = "aws:autoscaling:updatepolicy:rollingupdate"
-    name      = "MaxBatchSize"
-    value     = "1"
   }
   setting {
     namespace = "aws:elasticbeanstalk:command"

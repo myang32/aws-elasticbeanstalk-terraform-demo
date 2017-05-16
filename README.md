@@ -15,5 +15,3 @@ First: There a [full blog post](https://flypenguin.de/2017/04/13/elastic-beansta
 ## Notes
 
 * Single container app only
-* Uses the image `flypenguin/test` by default, which can simulate load
-* No private repos
