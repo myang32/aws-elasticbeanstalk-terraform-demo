@@ -5,9 +5,9 @@
 ebextensions/
 .ebextensions/
 
-# *.dist files and their non-dist counterparts
-*.dist
+# the non-dist versions of config files
 app_config_json.template
+elb-hostname.tf
 
 # generally added files for local tests
 my-*
